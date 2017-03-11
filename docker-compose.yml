@@ -1,0 +1,38 @@
+data:
+  image: busybox:latest
+  volumes:
+    - ./:/app
+  entrypoint: tail -f /dev/null
+
+app:
+  build: docker/php
+  working_dir: /app
+  volumes_from:
+    - data
+  expose:
+    - 9000
+  links:
+    - db
+  environment:
+    XDEBUG_CONFIG: "idekey=PHPSTORM remote_enable=On remote_connect_back=On"
+
+nginx:
+  image: nginx:latest
+  ports:
+    - "8002:8000"
+  volumes:
+    - ./:/app
+    - ./docker/nginx/vhost.conf:/etc/nginx/conf.d/vhost.conf
+  links:
+    - app
+
+db:
+  image: mongo:3.3
+  ports:
+    - "27017:27017"
+  volumes:
+    - ./data:/data:rw
+  environment:
+    MONGODB_USER: "api_dbu"
+    MONGODB_PASS: "api_pass"
+    MONGODB_DATABASE: "customers"
