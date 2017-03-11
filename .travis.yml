@@ -22,13 +22,13 @@ before_install:
   - docker-compose up -d
   - composer install --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
-#before_script:
-#  - composer require yiisoft/yii2-codeception
-#  - composer require codeception/base
-#  - composer require codeception/verify
-#  - composer require codeception/specify
-#  - composer require codeception/codeception
-#  - composer require satooshi/php-coveralls
+before_script:
+  - composer require yiisoft/yii2-codeception
+  - composer require codeception/base
+  - composer require codeception/verify
+  - composer require codeception/specify
+  - composer require codeception/codeception
+  - composer require satooshi/php-coveralls
 
 #script:
 #  - tests/unit.sh
