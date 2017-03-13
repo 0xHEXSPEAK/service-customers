@@ -31,11 +31,11 @@ class Country extends ActiveRecord
         return [
             [['name', 'iso2'], 'required'],
             [['name', 'iso2'], 'string'],
-//            ['states', 'yii2tech\embedded\Validator']
+            ['statesData', 'yii2tech\embedded\Validator']
         ];
     }
 
-    public function embedStates()
+    public function embedStatesData()
     {
         return $this->mapEmbeddedList('states', State::className());
     }

@@ -12,6 +12,10 @@ return [
         [
             'class' => 'yii\rest\UrlRule',
             'controller' => 'api/v1/country',
+            'except' => ['delete', 'create', 'update'],
+            'extraPatterns' => [
+                'GET <id>/states' => 'states',
+            ],
         ]
     ]
 ];

@@ -2,7 +2,6 @@
 
 namespace api\modules\api\v1\controllers;
 
-use api\modules\api\v1\models\State;
 use yii;
 use api\modules\api\v1\models\Country;
 
@@ -18,27 +17,17 @@ class CountryController extends BaseController
      */
     public $modelClass = 'api\modules\api\v1\models\Country';
 
-    public function actions()
+    public function actionStates($id)
     {
-        return [];
+        return $this->findCountry($id)->states;
     }
 
-    public function actionCreate()
+    public function findCountry($id)
     {
-        $country = new Country();
-        try {
-
-            foreach (Yii::$app->request->post('states') as $state) {
-                $country->states[] = new State($state);
-            }
-
-            if ($country->load(Yii::$app->request->post(), '') && $country->validate()) {
-                $country->save();
-                return $country;
-            }
-
-        } catch (\Exception $e) {
-            var_dump($e->getMessage(), $e->getFile(), $e->getLine());
+        $model = Country::findOne($id);
+        if (!$model) {
+            throw new yii\web\NotFoundHttpException("Object not found: $id");
         }
+        return $model;
     }
 }
