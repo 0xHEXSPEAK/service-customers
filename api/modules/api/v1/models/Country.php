@@ -35,6 +35,11 @@ class Country extends ActiveRecord
         ];
     }
 
+    public static function collectionName()
+    {
+        return 'countries';
+    }
+
     public function embedStatesData()
     {
         return $this->mapEmbeddedList('states', State::className());
