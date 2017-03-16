@@ -31,7 +31,7 @@ class AppController extends Controller
         $this->runAction('set-writable', ['interactive' => $this->interactive]);
         $this->runAction('set-executable', ['interactive' => $this->interactive]);
         $this->runAction('set-keys', ['interactive' => $this->interactive]);
-        \Yii::$app->runAction('migrate/up', ['interactive' => $this->interactive]);
+        \Yii::$app->runAction('mongodb-migrate/up', ['interactive' => $this->interactive]);
 //        \Yii::$app->runAction('rbac-migrate/up', ['interactive' => $this->interactive]);
     }
 

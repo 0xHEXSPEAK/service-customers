@@ -1,7 +1,7 @@
 <?php
 
 $config = [
-    'name' => 'Registryd Service Storage',
+    'name' => 'Service Customers',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'extensions' => require(__DIR__ . '/../../vendor/yiisoft/extensions.php'),
     'bootstrap' => ['log'],
