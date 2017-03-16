@@ -13,12 +13,12 @@ use api\modules\api\v1\services\CustomerInterface;
 class CustomerController extends BaseController
 {
     /**
-     * @var string
+     * @var string $modelClass
      */
     public $modelClass = 'api\modules\api\v1\models\Customer';
 
     /**
-     * @var CustomerInterface
+     * @var CustomerInterface $customerService
      */
     protected $customerService;
 

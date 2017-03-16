@@ -13,6 +13,7 @@ app:
     - 9000
   links:
     - db
+    - memcached
   environment:
     XDEBUG_CONFIG: "idekey=PHPSTORM remote_enable=On remote_connect_back=On"
 
@@ -25,6 +26,12 @@ nginx:
     - ./docker/nginx/vhost.conf:/etc/nginx/conf.d/vhost.conf
   links:
     - app
+
+memcached:
+  restart: always
+  image: memcached
+  environment:
+    MEMCACHED_MEMORY_LIMIT: 128
 
 db:
   image: mongo:3.3
