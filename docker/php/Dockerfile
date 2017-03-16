@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y \
         libpng12-dev \
         libicu-dev \
         libssl-dev \
+        libz-dev \
+        libmemcached-dev \
                 --no-install-recommends
 
 # Install Composer globally
@@ -18,6 +20,11 @@ RUN docker-php-ext-install mcrypt zip intl mbstring exif \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd
 
+# Install Memcached
+RUN pecl install memcached \
+    && docker-php-ext-enable memcached
+
+# Install Mongo
 RUN pecl install mongodb \
     && echo extension=mongodb.so > /usr/local/etc/php/conf.d/ext-mongodb.ini
 

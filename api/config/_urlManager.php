@@ -1,4 +1,5 @@
 <?php
+
 // Api url rules
 return [
     'class' => 'yii\web\UrlManager',

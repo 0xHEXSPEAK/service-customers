@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
 exited=$(docker ps -aq | wc -l)
 dangling=$(docker images -f "dangling=true" -q | wc -l)

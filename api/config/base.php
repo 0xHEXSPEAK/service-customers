@@ -5,6 +5,21 @@ $config = [
     'basePath' => dirname(__DIR__),
     'components' => [
         'urlManager' => require(__DIR__ . '/_urlManager.php'),
+        'cache' => [
+            'class' => 'yii\caching\MemCache',
+            'useMemcached' => true,
+            'servers' => [
+                [
+                    'host' => getenv('MEMCACHE_HOST'),
+                    'port' => getenv('MEMCACHE_PORT'),
+                    'weight' => 100,
+                ],
+            ],
+        ],
+        'kache' => [
+            'class' => 'common\components\cache\AppCache',
+            'ttl' => getenv('CACHE_TTL'),
+        ],
     ]
 ];
 
