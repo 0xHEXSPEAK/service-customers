@@ -4,47 +4,51 @@ namespace api\modules\api\v1\controllers;
 
 use yii;
 use api\modules\api\v1\models\Country;
-use cheatsheet\Time;
+use yii\base\Module;
+use yii\base\Exception;
+use yii\base\InvalidValueException;
+use yii\web\ServerErrorHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
+use api\modules\api\v1\services\CountryInterface;
 
-/**
- * CountryController
- *
- * @package api\modules\api\v1\controllers
- */
 class CountryController extends BaseController
 {
     /**
-     * @var string
+     * @var CountryInterface
      */
-    public $modelClass = 'api\modules\api\v1\models\Country';
+    protected $countryService;
+
+    public function __construct($id, Module $module, CountryInterface $countryService, array $config = [])
+    {
+        $this->countryService = $countryService;
+        parent::__construct($id, $module, $config);
+    }
+
+    public function init(){}
 
     public function actions()
     {
         return [];
     }
 
-    public function actionStates($id)
-    {
-        return $this->findCountry($id)->states;
-    }
-
     public function actionIndex()
     {
-        $page = Yii::$app->request->getQueryParam('page');
-        return Yii::$app->cache->getOrSet('customer-countries-'.$page, function() {
-            $dataProvider = new yii\data\ActiveDataProvider([
-                'query' => Country::find()
-            ]);
-            return $dataProvider->getModels();
-        }, Time::SECONDS_IN_A_MONTH);
+        try {
+            return $this->countryService->getList(Country::find(), Yii::$app->getRequest(), Yii::$app->getCache());
+        } catch (Exception $e) {
+            throw new ServerErrorHttpException();
+        }
     }
 
-    public function findCountry($id)
+    public function actionStates($iso2)
     {
-        $model = Country::findOne($id);
-        if (!$model) {
-            throw new yii\web\NotFoundHttpException("Object not found: $id");
+        try {
+            return $this->countryService->getStates(Country::find(), Yii::$app->getCache(), $iso2);
+        } catch (InvalidValueException $e) {
+            throw new NotFoundHttpException();
+        } catch (Exception $e) {
+            throw new BadRequestHttpException();
         }
-        return $model;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace api\modules\api\v1\models;
 
+use api\modules\api\v1\models\repositories\CountryRepository;
 use yii2tech\embedded\mongodb\ActiveRecord;
 
 class Country extends ActiveRecord
@@ -33,6 +34,11 @@ class Country extends ActiveRecord
             [['name', 'iso2'], 'string'],
             ['statesData', 'yii2tech\embedded\Validator']
         ];
+    }
+
+    public static function find()
+    {
+        return new CountryRepository(get_called_class());
     }
 
     public static function collectionName()

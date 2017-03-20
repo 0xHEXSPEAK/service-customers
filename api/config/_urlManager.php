@@ -15,7 +15,7 @@ return [
             'controller' => 'api/v1/country',
             'except' => ['delete', 'create', 'update'],
             'extraPatterns' => [
-                'GET <id>/states' => 'states',
+                'GET <iso2>/states' => 'states',
             ],
         ]
     ]
