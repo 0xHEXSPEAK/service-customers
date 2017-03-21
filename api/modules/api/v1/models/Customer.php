@@ -2,7 +2,9 @@
 
 namespace api\modules\api\v1\models;
 
-use yii\mongodb\ActiveRecord;
+use yii2tech\embedded\mongodb\ActiveRecord;
+use yii2tech\embedded\Validator as EmbedValidator;
+use yii2tech\embedded\Mapping;
 
 /**
  * Class Customer
@@ -20,7 +22,7 @@ class Customer extends ActiveRecord
     }
 
     /**
-     * @return array list of attribute names.
+     * @inheritdoc
      */
     public function attributes()
     {
@@ -29,25 +31,30 @@ class Customer extends ActiveRecord
             'firstname',
             'lastname',
             'email',
-            'default_address_id',
-            'default_billing_address_id'
+            'password',
+            'addresses',
         ];
     }
 
     /**
-     * Define rules for validation
+     * @inheritdoc
      */
     public function rules()
     {
         return [
-            [
-                [
-                    'firstname',
-                    'lastname',
-                    'email',
-                ],
-                'required'
-            ],
+            [['firstname', 'lastname', 'email', 'password'], 'required'],
+            [['firstname', 'lastname', 'password'], 'string'],
+            [['email'], 'email'],
+            [['addressesData'], EmbedValidator::className()]
         ];
+    }
+
+    /**
+     * Returns embed documents mongoDB mapping
+     * @return Mapping
+     */
+    public function embedAddressesData()
+    {
+        return $this->mapEmbeddedList('addresses', Address::className());
     }
 }

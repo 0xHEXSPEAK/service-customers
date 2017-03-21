@@ -15,7 +15,7 @@ class CustomerController extends BaseController
     /**
      * @var string $modelClass
      */
-    public $modelClass = 'api\modules\api\v1\models\Customer';
+    public $modelClass = 'api\modules\api\v1\models\resources\CustomerResource';
 
     /**
      * @var CustomerInterface $customerService

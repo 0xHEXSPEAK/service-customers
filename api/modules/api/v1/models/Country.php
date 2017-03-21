@@ -4,6 +4,7 @@ namespace api\modules\api\v1\models;
 
 use api\modules\api\v1\models\repositories\CountryRepository;
 use yii2tech\embedded\mongodb\ActiveRecord;
+use yii2tech\embedded\Validator as EmbedValidator;
 
 class Country extends ActiveRecord
 {
@@ -32,7 +33,7 @@ class Country extends ActiveRecord
         return [
             [['name', 'iso2'], 'required'],
             [['name', 'iso2'], 'string'],
-            ['statesData', 'yii2tech\embedded\Validator']
+            ['statesData', EmbedValidator::className()]
         ];
     }
 

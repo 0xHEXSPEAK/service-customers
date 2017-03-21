@@ -19,12 +19,13 @@ class Country implements CountryInterface
     public function getList(CountryRepository $countryRepository, Request $request, Cache $cache)
     {
         $page = $request->getQueryParam('page');
-        return $cache->getOrSet(self::CACHE_NAMESPACE.$page, function() use ($countryRepository) {
-            $dataProvider = new yii\data\ActiveDataProvider([
-                'query' => $countryRepository
-            ]);
-            return $dataProvider->getModels();
-        }, Time::SECONDS_IN_A_MONTH);
+        return $cache->getOrSet(self::CACHE_NAMESPACE.$page,
+            function() use ($countryRepository) {
+                $dataProvider = new yii\data\ActiveDataProvider([
+                    'query' => $countryRepository
+                ]);
+                return $dataProvider->getModels();
+            }, Time::SECONDS_IN_A_MONTH);
     }
 
     /**

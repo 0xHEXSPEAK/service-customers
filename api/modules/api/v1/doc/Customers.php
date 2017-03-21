@@ -1,6 +1,34 @@
 <?php
 
 /**
+ * @api {post} /customers POST Create new customer
+ * @apiName PostCustomers
+ * @apiGroup Customer
+ * @apiVersion 0.0.1
+ *
+ * @apiDescription Create new customer account
+ *
+ * @apiParam {String} firstname First name of the customer.
+ * @apiParam {String} lastname Last name of the customer.
+ * @apiParam {String} email <code>required</code> Email of the customer (Will be used as login).
+ * @apiParam {String} password  <code>required</code> Password.
+ *
+ * @apiSuccess {String} firstname First name of the customer.
+ * @apiSuccess {String} lastname Last name of the customer.
+ * @apiSuccess {String} email Email of the customer.
+ * @apiSuccess {Object[]} addresses Empty list of the user addresses.
+ *
+ * @apiSuccessExample Success-Response:
+ * HTTP/1.1 201 CREATED
+ * {
+ *      "firstname": "Adam",
+ *      "lastname": "Hogan",
+ *      "email": "user@example.com"
+ *      "addresses": []
+ * }
+ */
+
+/**
  * @api {get} /customers/:id GET Customer details
  * @apiName GetCustomers
  * @apiGroup Customer
@@ -8,8 +36,8 @@
  *
  * @apiDescription Request customer details by ID
  *
- * @apiSuccess {Number} first_name First name of the customer.
- * @apiSuccess {Number} last_name Last name of the customer.
+ * @apiSuccess {String} first_name First name of the customer.
+ * @apiSuccess {String} last_name Last name of the customer.
  * @apiSuccess {String} email Email of the customer.
  * @apiSuccess {Object} addresses List of the customer addresses.
  * @apiSuccess {Object} addresses.shipping Defaut shipping address.
