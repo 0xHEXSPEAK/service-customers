@@ -29,7 +29,7 @@
  */
 
 /**
- * @api {get} /customers/:id GET Customer details
+ * @api {get} /customers/:id GET Fetch customer details
  * @apiName GetCustomers
  * @apiGroup Customer
  * @apiVersion 0.0.1
@@ -138,5 +138,33 @@
  *              "phone": 1736748834
  *          }]
  *      }
+ * }
+ */
+
+/**
+ * @api {put} /customers/:id PUT Modify customer details
+ * @apiName PutCustomers
+ * @apiGroup Customer
+ * @apiVersion 0.0.1
+ *
+ * @apiDescription Modifies customer details for a customer ID associated with the access token.
+ *
+ * @apiParam {String} firstname First name of the customer.
+ * @apiParam {String} lastname Last name of the customer.
+ * @apiParam {String} email <code>required</code> Email of the customer (Will be used as login).
+ * @apiParam {String} password  <code>required</code> Password.
+ *
+ * @apiSuccess {String} firstname First name of the customer.
+ * @apiSuccess {String} lastname Last name of the customer.
+ * @apiSuccess {String} email Email of the customer.
+ * @apiSuccess {Object[]} addresses List of the customer addresses.
+ *
+ * @apiSuccessExample Success-Response:
+ * HTTP/1.1 209 OK
+ * {
+ *      "firstname": "Adam",
+ *      "lastname": "Hogan",
+ *      "email": "user@example.com"
+ *      "addresses": []
  * }
  */

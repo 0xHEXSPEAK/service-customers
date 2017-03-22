@@ -1,6 +1,7 @@
 <?php
+
 /**
- * @api {get} /countries GET Countries list
+ * @api {get} /countries GET Fetch countries list
  * @apiName GetCountries
  * @apiGroup Country
  * @apiVersion 0.0.1
@@ -47,7 +48,7 @@
  */
 
 /**
- * @api {get} /countries/:id/states GET States by country
+ * @api {get} /countries/:id/states GET Find states by country
  * @apiName GetCountryStates
  * @apiGroup Country
  * @apiVersion 0.0.1
