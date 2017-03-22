@@ -9,6 +9,9 @@ return [
         [
             'class' => 'yii\rest\UrlRule',
             'controller' => 'api/v1/customer',
+            'extraPatterns' => [
+                'POST my/addresses' => 'create-address',
+            ],
         ],
         [
             'class' => 'yii\rest\UrlRule',

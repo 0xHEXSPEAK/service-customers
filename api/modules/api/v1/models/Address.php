@@ -2,10 +2,9 @@
 
 namespace api\modules\api\v1\models;
 
-use yii2tech\embedded\Validator as EmbedValidator;
-use yii2tech\embedded\mongodb\ActiveRecord;
+use yii\base\Model;
 
-class Address extends ActiveRecord
+class Address extends Model
 {
     public $street;
 
@@ -24,17 +23,6 @@ class Address extends ActiveRecord
         return [
             [['street', 'city', 'zipCode'], 'string'],
             [['phone'], 'number'],
-            [['stateData', 'countryData'], EmbedValidator::className()]
         ];
-    }
-
-    public function embedStateData()
-    {
-        return $this->mapEmbedded('state', State::className());
-    }
-
-    public function embedCountryData()
-    {
-        return $this->mapEmbedded('country', Country::className());
     }
 }
