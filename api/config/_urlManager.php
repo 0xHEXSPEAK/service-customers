@@ -11,6 +11,7 @@ return [
             'controller' => 'api/v1/customer',
             'extraPatterns' => [
                 'POST my/addresses' => 'create-address',
+                'GET my/addresses/<addressId>' => 'view-address',
             ],
         ],
         [

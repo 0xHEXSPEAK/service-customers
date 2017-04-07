@@ -45,7 +45,6 @@ class Customer extends ActiveRecord
             [['firstname', 'lastname', 'email', 'password'], 'required'],
             [['firstname', 'lastname', 'password'], 'string'],
             [['email'], 'email'],
-            [['addressesData'], EmbedValidator::className()]
         ];
     }
 

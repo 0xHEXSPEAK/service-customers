@@ -4,6 +4,7 @@ namespace api\modules\api\v1\controllers;
 
 use api\modules\api\v1\models\Country;
 use api\modules\api\v1\models\Customer;
+use api\modules\api\v1\services\Customer as CustomerService;
 use yii;
 use api\modules\api\v1\models\Address;
 use yii\base\Module;
@@ -22,7 +23,7 @@ class CustomerController extends BaseController
     public $modelClass = 'api\modules\api\v1\models\resources\CustomerResource';
 
     /**
-     * @var CustomerInterface $customerService
+     * @var CustomerService $customerService
      */
     protected $customerService;
 
@@ -46,27 +47,27 @@ class CustomerController extends BaseController
 
     public function actionCreateAddress()
     {
-        $countryCode = Yii::$app->getRequest()->getBodyParam('country');
-        $stateCode = Yii::$app->getRequest()->getBodyParam('state');
+        try {
+            return $this->customerService->addAddress(
+                Country::find(),
+                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                new Address(),
+                Yii::$app->getRequest()
+            );
+        } catch (yii\base\InvalidValueException $e) {
+            throw new yii\web\BadRequestHttpException($e->getMessage());
+        }
+    }
 
-        $address = new Address();
-        $address->load(Yii::$app->getRequest()->getBodyParams(), '');
-
-        $contry = Country::find()->findByISO2Code($countryCode);
-        $countryState = array_filter($contry->states, function($state) use ($stateCode) {
-            if ($state['iso2'] == $stateCode) {
-                return false;
-            }
-            return true;
-        });
-
-        $address->country = $contry->toArray(['name', 'iso2']);
-        $address->state = $countryState[0];
-
-        $customer = Customer::findOne('58d1872e7b7c8d000538ba73');
-        $customer->addressesData[] = $address;
-        $customer->save();
-
-        return $customer;
+    public function actionViewAddress($addressId)
+    {
+        try {
+            return $this->customerService->getAddress(
+                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                $addressId
+            );
+        } catch (yii\base\InvalidValueException $e) {
+            throw new yii\web\NotFoundHttpException($e->getMessage());
+        }
     }
 }

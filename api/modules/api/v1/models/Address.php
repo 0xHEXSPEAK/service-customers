@@ -21,8 +21,10 @@ class Address extends Model
     public function rules()
     {
         return [
-            [['street', 'city', 'zipCode'], 'string'],
+            [['street', 'city', 'zipCode', ], 'string'],
             [['phone'], 'number'],
+            [['state', 'country'], 'string', 'min' => 2],
+            [['street', 'country', 'state', 'zipCode'], 'required']
         ];
     }
 }

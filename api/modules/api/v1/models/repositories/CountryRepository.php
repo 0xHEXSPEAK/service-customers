@@ -10,4 +10,16 @@ class CountryRepository extends ActiveQuery
     {
         return $this->where(['iso2' => $iso2])->one();
     }
+
+    public function findByISO2CodeAndStateISO2($iso2, $stateIso2)
+    {
+        return $this->where([
+            'iso2' => $iso2,
+            'states' => [
+                '$elemMatch' => [
+                    'iso2' => $stateIso2
+                ]
+            ]
+        ])->one();
+    }
 }
