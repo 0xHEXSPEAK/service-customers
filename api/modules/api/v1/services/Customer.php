@@ -2,47 +2,38 @@
 
 namespace api\modules\api\v1\services;
 
+use yii\base\InvalidValueException;
+use yii\web\Request;
 use api\modules\api\v1\models\Address;
 use api\modules\api\v1\models\repositories\CountryRepository;
 use api\modules\api\v1\models\Customer as CustomerModel;
-use yii\base\InvalidValueException;
-use yii\web\Request;
 
 /**
- * Class Customer
- *
  * @package api\modules\api\v1\services
  */
 class Customer implements CustomerInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function addAddress(
         CountryRepository $countryRepository,
         CustomerModel $customer,
         Address $address,
         Request $request
     ) {
-        if ( //checks if specified combination with country and state code are actually exists.
-            !$countryRepository->findByISO2CodeAndStateISO2(
-                $request->getBodyParam('country'),
-                $request->getBodyParam('state')
-            )
-        ) {
-            throw new InvalidValueException('Invalid country ISO2 or state ISO2 code.');
+        if (!$this->validateAddress($countryRepository, $address, $request)) {
+            return $address;
         }
 
-        if ( //validates address and checks if customer variable exists.
-            $address->load($request->getBodyParams(), '') &&
-            $address->validate() &&
-            $customer
-        ) {
-            $customer->addressesData[] = $address;
-            $customer->save();
-            return $customer;
-        }
-
-        return $address;
+        $customer->addressesData[] = $address;
+        $customer->save();
+        return $customer;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAddress(CustomerModel $customer, $addressId)
     {
         if (isset($customer->addressesData[$addressId])) {
@@ -50,5 +41,49 @@ class Customer implements CustomerInterface
         }
 
         throw new InvalidValueException('Address with specified ID not found.');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteAddress(CustomerModel $customer, $addressId)
+    {
+        $this->getAddress($customer, $addressId);
+        unset($customer->addressesData[$addressId]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateAddress(
+        CountryRepository $countryRepository,
+        CustomerModel $customer,
+        Address $address,
+        Request $request,
+        $addressId
+    ) {
+        if ($this->validateAddress($countryRepository, $address, $request)) {
+            $this->getAddress($customer, $addressId);
+            $customer->addressesData[$addressId] = $address;
+        }
+
+        return $address;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateAddress(CountryRepository $countryRepository, Address &$address, Request $request)
+    {
+        if ( //checks if specified combination with country and state code are actually exists.
+        !$countryRepository->findByISO2CodeAndStateISO2(
+            $request->getBodyParam('country'),
+            $request->getBodyParam('state')
+        )
+        ) {
+            throw new InvalidValueException('Invalid country ISO2 or state ISO2 code.');
+        }
+
+        return $address->load($request->getBodyParams(), '') && $address->validate();
     }
 }

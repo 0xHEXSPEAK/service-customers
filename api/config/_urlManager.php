@@ -1,5 +1,7 @@
 <?php
 
+use api\modules\api\v1\web\UrlParamHandler;
+
 // Api url rules
 return [
     'class' => 'yii\web\UrlManager',
@@ -7,11 +9,18 @@ return [
     'showScriptName' => false,
     'rules' => [
         [
-            'class' => 'yii\rest\UrlRule',
+            'class' => 'api\modules\api\v1\web\UrlRule',
             'controller' => 'api/v1/customer',
+            'paramHandlers' => [
+                'addressId' => [
+                    UrlParamHandler::className(), 'decrement'
+                ]
+            ],
             'extraPatterns' => [
                 'POST my/addresses' => 'create-address',
-                'GET my/addresses/<addressId>' => 'view-address',
+                'GET my/addresses/<addressId:\d+>' => 'view-address',
+                'PUT my/addresses/<addressId:\d+>' => 'update-address',
+                'DELETE my/addresses/<addressId:\d+>' => 'delete-address',
             ],
         ],
         [

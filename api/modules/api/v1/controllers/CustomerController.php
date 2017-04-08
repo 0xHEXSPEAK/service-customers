@@ -70,4 +70,31 @@ class CustomerController extends BaseController
             throw new yii\web\NotFoundHttpException($e->getMessage());
         }
     }
+
+    public function actionDeleteAddress($addressId)
+    {
+        try {
+            $this->customerService->deleteAddress(
+                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                $addressId
+            );
+        } catch (yii\base\InvalidValueException $e) {
+            throw new yii\web\BadRequestHttpException($e->getMessage());
+        }
+    }
+
+    public function actionUpdateAddress($addressId)
+    {
+        try {
+            $this->customerService->updateAddress(
+                Country::find(),
+                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                new Address(),
+                Yii::$app->getRequest(),
+                $addressId
+            );
+        } catch (yii\base\InvalidValueException $e) {
+            throw new yii\web\BadRequestHttpException($e->getMessage());
+        }
+    }
 }
