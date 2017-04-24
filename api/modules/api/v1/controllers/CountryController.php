@@ -11,8 +11,9 @@ use yii\web\ServerErrorHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 use api\modules\api\v1\services\CountryInterface;
+use Oxhexspeak\OauthFilter\Controllers\RestController;
 
-class CountryController extends BaseController
+class CountryController extends RestController
 {
     /**
      * @var CountryInterface

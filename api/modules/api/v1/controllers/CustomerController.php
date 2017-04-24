@@ -5,17 +5,19 @@ namespace api\modules\api\v1\controllers;
 use api\modules\api\v1\models\Country;
 use api\modules\api\v1\models\Customer;
 use api\modules\api\v1\services\Customer as CustomerService;
+use Oxhexspeak\OauthFilter\Models\Client;
 use yii;
 use api\modules\api\v1\models\Address;
 use yii\base\Module;
 use api\modules\api\v1\services\CustomerInterface;
+use Oxhexspeak\OauthFilter\Controllers\RestController;
 
 /**
  * Class CustomerController
  *
  * @package api\modules\api\v1\controllers
  */
-class CustomerController extends BaseController
+class CustomerController extends RestController
 {
     /**
      * @var string $modelClass
@@ -45,12 +47,24 @@ class CustomerController extends BaseController
         parent::__construct($id, $module, $config);
     }
 
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['access']['allow']['customers'] = [
+            'create-address',
+            'view-address',
+            'delete-address',
+            'update-address'
+        ];
+        return $behaviors;
+    }
+
     public function actionCreateAddress()
     {
         try {
             return $this->customerService->addAddress(
                 Country::find(),
-                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                Customer::findOne($this->getUserIdentity()->getId()),
                 new Address(),
                 Yii::$app->getRequest()
             );
@@ -63,7 +77,7 @@ class CustomerController extends BaseController
     {
         try {
             return $this->customerService->getAddress(
-                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                Customer::findOne($this->getUserIdentity()->getId()),
                 $addressId
             );
         } catch (yii\base\InvalidValueException $e) {
@@ -75,7 +89,7 @@ class CustomerController extends BaseController
     {
         try {
             $this->customerService->deleteAddress(
-                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                Customer::findOne($this->getUserIdentity()->getId()),
                 $addressId
             );
         } catch (yii\base\InvalidValueException $e) {
@@ -88,7 +102,7 @@ class CustomerController extends BaseController
         try {
             $this->customerService->updateAddress(
                 Country::find(),
-                Customer::findOne('58e7eed0f2806000072e6aa2'),
+                Customer::findOne($this->getUserIdentity()->getId()),
                 new Address(),
                 Yii::$app->getRequest(),
                 $addressId
@@ -96,5 +110,13 @@ class CustomerController extends BaseController
         } catch (yii\base\InvalidValueException $e) {
             throw new yii\web\BadRequestHttpException($e->getMessage());
         }
+    }
+
+    /**
+     * @return null|yii\web\IdentityInterface|Client
+     */
+    protected function getUserIdentity()
+    {
+        return Yii::$app->getUser()->getIdentity();
     }
 }
