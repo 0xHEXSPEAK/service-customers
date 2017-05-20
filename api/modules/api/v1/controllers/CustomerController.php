@@ -50,13 +50,56 @@ class CustomerController extends RestController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['access']['allow']['customers'] = [
-            'create-address',
-            'view-address',
-            'delete-address',
-            'update-address'
+        $behaviors['access']['allow'] = [
+            'customer' => [
+                'create-address',
+                'view-address',
+                'delete-address',
+                'update-address',
+            ],
+            'client' => [
+                'index',
+            ],
+            'any' => [
+                'view',
+                'update',
+                'delete',
+            ]
         ];
+        $behaviors['access']['optional'][] = 'create';
         return $behaviors;
+    }
+
+    public function actionView($id)
+    {
+        $this->isResourceOwner($id);
+        return Customer::findOne($id);
+    }
+
+    public function actionUpdate($id)
+    {
+        $this->isResourceOwner($id);
+
+        if ($model = Customer::findOne($id)) {
+            $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+            $model->save();
+
+            return $model;
+        }
+
+        throw new yii\web\NotFoundHttpException('The object with specified id not found.');
+    }
+
+    public function actionDelete($id)
+    {
+        $this->isResourceOwner($id);
+        $model = Customer::findOne($id);
+
+        if ($model && $model->delete()) {
+            Yii::$app->getResponse()->setStatusCode(204);
+        }
+
+        throw new yii\web\NotFoundHttpException('The object with specified id not found.');
     }
 
     public function actionCreateAddress()
@@ -110,13 +153,5 @@ class CustomerController extends RestController
         } catch (yii\base\InvalidValueException $e) {
             throw new yii\web\BadRequestHttpException($e->getMessage());
         }
-    }
-
-    /**
-     * @return null|yii\web\IdentityInterface|Client
-     */
-    protected function getUserIdentity()
-    {
-        return Yii::$app->getUser()->getIdentity();
     }
 }
