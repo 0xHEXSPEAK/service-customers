@@ -33,6 +33,15 @@ class CountryController extends RestController
         return [];
     }
 
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['access']['optional'] = [
+            'index', 'states'
+        ];
+        return $behaviors;
+    }
+
     public function actionIndex()
     {
         try {
