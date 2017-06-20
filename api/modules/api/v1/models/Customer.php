@@ -31,7 +31,7 @@ class Customer extends ActiveRecord
             'firstname',
             'lastname',
             'email',
-            'password',
+//            'password',
             'addresses',
         ];
     }
@@ -42,8 +42,8 @@ class Customer extends ActiveRecord
     public function rules()
     {
         return [
-            [['firstname', 'lastname', 'email', 'password'], 'required'],
-            [['firstname', 'lastname', 'password'], 'string'],
+            [['firstname', 'lastname', 'email'], 'required'],
+            [['firstname', 'lastname'], 'string'],
             [['email'], 'email'],
         ];
     }

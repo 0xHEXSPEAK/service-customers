@@ -70,10 +70,42 @@ class CustomerController extends RestController
         return $behaviors;
     }
 
+    public function actions()
+    {
+        $actions = parent::actions();
+        unset($actions['create']);
+        unset($actions['update']);
+        unset($actions['delete']);
+        return $actions;
+    }
+
     public function actionView($id)
     {
         $this->isResourceOwner($id);
         return Customer::findOne($id);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Customer();
+        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        if ( Yii::$app->getRequest()->getBodyParam('password')) {
+            $ch = curl_init();
+            // TODO: add oauth service url to config & separate this logic to service and client
+            curl_setopt($ch, CURLOPT_URL,"http://localhost:8001/api/v1/o-auth/register");
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,
+                http_build_query([
+                    'username' => $model->getAttribute('username'),
+                    'password' => Yii::$app->getRequest()->get('password'),
+                ])
+            );
+            if (!curl_exec ($ch)) {
+                throw new yii\web\BadRequestHttpException();
+            }
+            Yii::$app->getResponse()->setStatusCode(201);
+        }
+        return $model;
     }
 
     public function actionUpdate($id)
