@@ -13,6 +13,11 @@ use yii2tech\embedded\Mapping;
  */
 class Customer extends ActiveRecord
 {
+
+    const SCENARIO_OAUTH = 'oauthSync';
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
     /**
      * @inheritdoc
      */
@@ -31,8 +36,11 @@ class Customer extends ActiveRecord
             'firstname',
             'lastname',
             'email',
-//            'password',
             'addresses',
+
+            // For sync with oauth2 server
+            '_id_oauth',
+            'password',
         ];
     }
 
@@ -45,7 +53,18 @@ class Customer extends ActiveRecord
             [['firstname', 'lastname', 'email'], 'required'],
             [['firstname', 'lastname'], 'string'],
             [['email'], 'email'],
+            [['password'], 'required', 'on' => self::SCENARIO_OAUTH]
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios =  parent::scenarios();
+        $scenarios[self::SCENARIO_OAUTH]    = ['firstname', 'lastname', 'email', 'password'];
+        $scenarios[self::SCENARIO_CREATE]   = ['firstname', 'lastname', 'email', '_id_oauth'];
+        $scenarios[self::SCENARIO_UPDATE]   = ['firstname', 'lastname', 'email', 'addresses'];
+
+        return $scenarios;
     }
 
     /**

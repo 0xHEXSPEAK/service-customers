@@ -4,6 +4,7 @@ namespace api\modules\api\v1\controllers;
 
 use api\modules\api\v1\models\Country;
 use api\modules\api\v1\models\Customer;
+use api\modules\api\v1\models\resources\CustomerResource;
 use api\modules\api\v1\services\Customer as CustomerService;
 use Oxhexspeak\OauthFilter\Models\Client;
 use yii;
@@ -87,24 +88,45 @@ class CustomerController extends RestController
 
     public function actionCreate()
     {
-        $model = new Customer();
+        $model = new CustomerResource();
+
+        $model->setScenario(Customer::SCENARIO_OAUTH);
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-        if ( Yii::$app->getRequest()->getBodyParam('password')) {
+        Yii::$app->getResponse()->setStatusCode(201);
+
+        if ($model->validate()) {
             $ch = curl_init();
             // TODO: add oauth service url to config & separate this logic to service and client
-            curl_setopt($ch, CURLOPT_URL,"http://localhost:8001/api/v1/o-auth/register");
+            curl_setopt($ch, CURLOPT_URL,"http://172.17.0.1:8001/api/v1/o-auth/register");
             curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_HEADER  , 1);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Accept: application/json',
+            ));
+
             curl_setopt($ch, CURLOPT_POSTFIELDS,
                 http_build_query([
-                    'username' => $model->getAttribute('username'),
-                    'password' => Yii::$app->getRequest()->get('password'),
+                    'username' => $model->getAttribute('email'),
+                    'password' => $model->getAttribute('password'),
                 ])
             );
-            if (!curl_exec ($ch)) {
+
+            $response = curl_exec ($ch);
+            $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+            $oAuthUser = json_decode(substr($response, $header_size));
+
+            if (!curl_getinfo($ch, CURLINFO_HTTP_CODE) == 201 || !$oAuthUser->id) {
                 throw new yii\web\BadRequestHttpException();
             }
-            Yii::$app->getResponse()->setStatusCode(201);
+
+            $model->setScenario(Customer::SCENARIO_CREATE);
+            $model->load(Yii::$app->getRequest()->getBodyParams() + [
+                '_id_oauth' => $oAuthUser->id
+            ], '');
+            $model->save();
         }
+
         return $model;
     }
 

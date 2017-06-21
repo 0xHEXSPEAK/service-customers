@@ -12,7 +12,7 @@ class CustomerResource extends Customer
     public function fields()
     {
         return [
-            '_id',
+            'id' => '_id_oauth',
             'firstname',
             'lastname',
             'email',
