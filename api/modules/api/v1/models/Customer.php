@@ -49,6 +49,7 @@ class Customer extends ActiveRecord
     {
         return [
             ['email', 'email'],
+            ['email', 'unique'],
             [['firstname', 'lastname'], 'string'],
             [
                 [

@@ -1,5 +1,8 @@
 <?php
 
+use Oxhexspeak\OauthFilter\Models\Client;
+use yii\web\User;
+
 $config = [
     'id' => 'api',
     'basePath' => dirname(__DIR__),
@@ -19,6 +22,11 @@ $config = [
         'kache' => [
             'class' => 'common\components\cache\AppCache',
             'ttl' => getenv('CACHE_TTL'),
+        ],
+        'user' => [
+            'class' => User::class,
+            'identityClass' => Client::class,
+            'enableSession' => false,
         ],
     ]
 ];

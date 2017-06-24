@@ -24,7 +24,8 @@ class Oauth implements Configurable
         $oauthReponse = $this->httpClient->post($this->config['oauthEndpoint'] . '/register', [
             'allow_redirects'   => false,
             'headers'           => [
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->token(),
             ],
             'form_params'       => [
                 'username' => $customer->getAttribute('email'),
@@ -37,6 +38,23 @@ class Oauth implements Configurable
             if ($oauthUser->id) {
                 return $oauthUser;
             }
+        }
+
+        throw new InvalidValueException();
+    }
+
+    public function token()
+    {
+        $oauthResponse = $this->httpClient->post($this->config['oauthEndpoint'] . '/token', [
+            'form_params'       => [
+                'grant_type'    => 'client_credentials',
+                'client_id'     => $this->config['oauthClientId'],
+                'client_secret' => $this->config['oauthClientSecret']
+            ],
+        ]);
+
+        if ($oauthResponse->getStatusCode() === 200) {
+            return json_decode($oauthResponse->getBody())->access_token;
         }
 
         throw new InvalidValueException();

@@ -6,7 +6,6 @@ use yii;
 use yii\base\Module;
 use api\modules\api\v1\clients\Oauth;
 use api\modules\api\v1\models\Country;
-use api\modules\api\v1\models\Customer;
 use api\modules\api\v1\models\resources\CustomerResource;
 use api\modules\api\v1\services\Customer as CustomerService;
 use api\modules\api\v1\models\Address;
@@ -51,7 +50,7 @@ class CustomerController extends RestController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['access']['allow'] = [
+        $behaviors['authenticator']['allow'] = [
             'customer' => [
                 'create-address',
                 'view-address',
@@ -67,7 +66,7 @@ class CustomerController extends RestController
                 'delete',
             ]
         ];
-        $behaviors['access']['optional'][] = 'create';
+        $behaviors['authenticator']['optional'][] = 'create';
         return $behaviors;
     }
 
@@ -77,13 +76,8 @@ class CustomerController extends RestController
         unset($actions['create']);
         unset($actions['update']);
         unset($actions['delete']);
+        unset($actions['view']);
         return $actions;
-    }
-
-    public function actionView($id)
-    {
-        $this->isResourceOwner($id);
-        return Customer::findOneByOauthId($id);
     }
 
     public function actionCreate()
@@ -93,7 +87,9 @@ class CustomerController extends RestController
             return $this->customerService->createCustomer(
                 new CustomerResource(),
                 new Oauth(new \GuzzleHttp\Client(), [
-                    'oauthEndpoint' => env('AUTH_URL')
+                    'oauthEndpoint' => env('AUTH_URL'),
+                    'oauthClientId' => env('AUTH_CLIENT_ID'),
+                    'oauthClientSecret' => env('AUTH_CLIENT_SECRET'),
                 ]),
                 Yii::$app->getRequest()
             );
@@ -102,11 +98,21 @@ class CustomerController extends RestController
         }
     }
 
+    public function actionView($id)
+    {
+        $this->isResourceOwner($id);
+        if ($model = CustomerResource::findOneByOauthId($id)) {
+            return $model;
+        }
+
+        throw new yii\web\NotFoundHttpException('The object with specified id not found.');
+    }
+
     public function actionUpdate($id)
     {
         $this->isResourceOwner($id);
 
-        if ($model = Customer::findOneByOauthId($id)) {
+        if ($model = CustomerResource::findOneByOauthId($id)) {
             $model->load(Yii::$app->getRequest()->getBodyParams(), '');
             $model->save();
 
@@ -119,7 +125,7 @@ class CustomerController extends RestController
     public function actionDelete($id)
     {
         $this->isResourceOwner($id);
-        $model = Customer::findOneByOauthId($id);
+        $model = CustomerResource::findOneByOauthId($id);
 
         if ($model && $model->delete()) {
             Yii::$app->getResponse()->setStatusCode(204);
@@ -133,7 +139,7 @@ class CustomerController extends RestController
         try {
             return $this->customerService->addAddress(
                 Country::find(),
-                Customer::findOneByOauthId($this->getUserIdentity()->getId()),
+                CustomerResource::findOneByOauthId($this->getUserIdentity()->getId()),
                 new Address(),
                 Yii::$app->getRequest()
             );
@@ -146,7 +152,7 @@ class CustomerController extends RestController
     {
         try {
             return $this->customerService->getAddress(
-                Customer::findOneByOauthId($this->getUserIdentity()->getId()),
+                CustomerResource::findOneByOauthId($this->getUserIdentity()->getId()),
                 $addressId
             );
         } catch (yii\base\InvalidValueException $e) {
@@ -158,7 +164,7 @@ class CustomerController extends RestController
     {
         try {
             $this->customerService->deleteAddress(
-                Customer::findOneByOauthId($this->getUserIdentity()->getId()),
+                CustomerResource::findOneByOauthId($this->getUserIdentity()->getId()),
                 $addressId
             );
         } catch (yii\base\InvalidValueException $e) {
@@ -171,7 +177,7 @@ class CustomerController extends RestController
         try {
             $this->customerService->updateAddress(
                 Country::find(),
-                Customer::findOneByOauthId($this->getUserIdentity()->getId()),
+                CustomerResource::findOneByOauthId($this->getUserIdentity()->getId()),
                 new Address(),
                 Yii::$app->getRequest(),
                 $addressId
