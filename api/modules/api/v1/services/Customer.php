@@ -2,6 +2,7 @@
 
 namespace api\modules\api\v1\services;
 
+use api\modules\api\v1\clients\Oauth;
 use yii\base\InvalidValueException;
 use yii\web\Request;
 use api\modules\api\v1\models\Address;
@@ -68,6 +69,28 @@ class Customer implements CustomerInterface
         }
 
         return $address;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createCustomer(CustomerModel $customer, Oauth $oauthClient, Request $request)
+    {
+        $customer->setScenario(CustomerModel::SCENARIO_OAUTH);
+        $customer->load($request->getBodyParams(), '');
+
+        if ($customer->validate()) {
+            $oAuthUser = $oauthClient->register($customer);
+
+            unset($customer->password);
+            $customer->setScenario(CustomerModel::SCENARIO_CREATE);
+            $customer->load($request->getBodyParams() + [
+                '_id_oauth' => $oAuthUser->id
+            ], '');
+            $customer->save();
+        }
+
+        return $customer;
     }
 
     /**

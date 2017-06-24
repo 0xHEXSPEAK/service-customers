@@ -14,9 +14,9 @@ use yii2tech\embedded\Mapping;
 class Customer extends ActiveRecord
 {
 
-    const SCENARIO_OAUTH = 'oauthSync';
-    const SCENARIO_CREATE = 'create';
-    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_OAUTH    = 'oauthSync';
+    const SCENARIO_CREATE   = 'create';
+    const SCENARIO_UPDATE   = 'update';
 
     /**
      * @inheritdoc
@@ -33,13 +33,11 @@ class Customer extends ActiveRecord
     {
         return [
             '_id',
+            '_id_oauth',
             'firstname',
             'lastname',
             'email',
             'addresses',
-
-            // For sync with oauth2 server
-            '_id_oauth',
             'password',
         ];
     }
@@ -50,10 +48,18 @@ class Customer extends ActiveRecord
     public function rules()
     {
         return [
-            [['firstname', 'lastname', 'email'], 'required'],
+            ['email', 'email'],
             [['firstname', 'lastname'], 'string'],
-            [['email'], 'email'],
-            [['password'], 'required', 'on' => self::SCENARIO_OAUTH]
+            [
+                [
+                    'firstname',
+                    'lastname',
+                    'email',
+                ],
+                'required',
+            ],
+            ['_id_oauth', 'number', 'on' => self::SCENARIO_CREATE],
+            ['password', 'required', 'on' => self::SCENARIO_OAUTH],
         ];
     }
 
@@ -65,6 +71,11 @@ class Customer extends ActiveRecord
         $scenarios[self::SCENARIO_UPDATE]   = ['firstname', 'lastname', 'email', 'addresses'];
 
         return $scenarios;
+    }
+
+    public static function findOneByOauthId($oauthId)
+    {
+        return self::findOne(['_id_oauth' => (int) $oauthId]);
     }
 
     /**

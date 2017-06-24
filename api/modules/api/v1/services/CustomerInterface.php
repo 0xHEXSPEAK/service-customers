@@ -2,6 +2,7 @@
 
 namespace api\modules\api\v1\services;
 
+use api\modules\api\v1\clients\Oauth;
 use yii\web\Request;
 use api\modules\api\v1\models\Address;
 use api\modules\api\v1\models\Customer as CustomerModel;
@@ -64,6 +65,15 @@ interface CustomerInterface
         Request $request,
         $addressId
     );
+
+    /**
+     * Creates customer and register credentials with oauth service.
+     *
+     * @param CustomerModel $customer
+     * @param Oauth $oauthClient
+     * @return mixed
+     */
+    public function createCustomer(CustomerModel $customer, Oauth $oauthClient, Request $request);
 
     /**
      * Loads data on address model reference and returns if validatio succeed.
