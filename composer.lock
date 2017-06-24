@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter.git",
-                "reference": "3f3e8a0ac66b3f48339ee2b7e7418be18ebb9bb6"
+                "reference": "6d0ca3ae53e13ff037e3a84ca7815d5972852c26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/0xHEXSPEAK/yii2-oauth2-filter/zipball/3f3e8a0ac66b3f48339ee2b7e7418be18ebb9bb6",
-                "reference": "3f3e8a0ac66b3f48339ee2b7e7418be18ebb9bb6",
+                "url": "https://api.github.com/repos/0xHEXSPEAK/yii2-oauth2-filter/zipball/6d0ca3ae53e13ff037e3a84ca7815d5972852c26",
+                "reference": "6d0ca3ae53e13ff037e3a84ca7815d5972852c26",
                 "shasum": ""
             },
             "require": {
@@ -52,7 +52,7 @@
                 "source": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter/tree/master",
                 "issues": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter/issues"
             },
-            "time": "2017-06-24 21:54:11"
+            "time": "2017-06-24 22:01:25"
         },
         {
             "name": "asofter/yii2-imperavi-redactor",
