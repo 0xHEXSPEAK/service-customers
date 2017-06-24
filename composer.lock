@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c9b0beae0d995a750cfbb7be56cb60a",
+    "content-hash": "b39fc86e641b461b2d3080b8ca01e880",
     "packages": [
         {
             "name": "0xhexspeak/yii2-oauth2-filter",
-            "version": "v0.0.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter.git",
-                "reference": "979368f75ed835c1d652c487fd6273fc153b3206"
+                "reference": "3f3e8a0ac66b3f48339ee2b7e7418be18ebb9bb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/0xHEXSPEAK/yii2-oauth2-filter/zipball/979368f75ed835c1d652c487fd6273fc153b3206",
-                "reference": "979368f75ed835c1d652c487fd6273fc153b3206",
+                "url": "https://api.github.com/repos/0xHEXSPEAK/yii2-oauth2-filter/zipball/3f3e8a0ac66b3f48339ee2b7e7418be18ebb9bb6",
+                "reference": "3f3e8a0ac66b3f48339ee2b7e7418be18ebb9bb6",
                 "shasum": ""
             },
             "require": {
@@ -49,10 +49,10 @@
                 "yii2"
             ],
             "support": {
-                "source": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter/tree/v0.0.2",
+                "source": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter/tree/master",
                 "issues": "https://github.com/0xHEXSPEAK/yii2-oauth2-filter/issues"
             },
-            "time": "2017-05-20T18:21:43+00:00"
+            "time": "2017-06-24 21:54:11"
         },
         {
             "name": "asofter/yii2-imperavi-redactor",
@@ -5161,7 +5161,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "asofter/yii2-imperavi-redactor": 20,
-        "trntv/cheatsheet": 20
+        "trntv/cheatsheet": 20,
+        "0xhexspeak/yii2-oauth2-filter": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

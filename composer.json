@@ -56,7 +56,7 @@
         "bower-asset/flot": "^0.8",
         "symfony/process": "^3.0",
         "yii2tech/embedded": "^1.0",
-        "0xhexspeak/yii2-oauth2-filter": "v0.0.2",
+        "0xhexspeak/yii2-oauth2-filter": "dev-master",
         "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
